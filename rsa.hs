@@ -17,7 +17,7 @@ geraPrimo = do n <- randomRIO ((2^511),(2^512)-1)
                if b then return n else geraPrimo
 
 geraPrimoDiferente p = do q <- geraPrimo
-                          if (p /= q) then return q else geraPrimoDiferente p
+                          if p /= q then return q else geraPrimoDiferente p
 
 geraPrimos = do p <- geraPrimo
                 q <- geraPrimoDiferente p
@@ -28,3 +28,6 @@ geraPrimoPequeno = do i <- randomRIO(170,1230)
 
 crivoEratostenes = crivoEratostenes' [2..]
 crivoEratostenes' (x:xs) = x:(crivoEratostenes' $ filter (\a -> a `mod` x /= 0) xs)
+
+extEuclid a 0 = (a,1,0)
+extEuclid a b = let (d', x', y') = extEuclid b (a `mod` b) in (d', y', (x' - (a `div` b) * y'))
