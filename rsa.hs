@@ -54,6 +54,14 @@ criptografa e n m = expModular m e n
 
 descriptografa d n c = expModular c d n
 
+{-msgToInt m = msgToInt' m 0
+msgToInt' [] e = 0
+msgToInt' (x:xs) e = toInteger (ord x) * (255^e) + msgToInt' xs (e+1)
+
+intToMsg n = intToMsg' n 1
+intToMsg' 0 e = ""
+intToMsg' n e = [chr (fromEnum (n `mod` (255^e)))] ++ intToMsg' (n-(n `mod` 255^(e-1))) (e+1)-}
+
 main = do (p,q) <- geraPrimos
           e <- geraE p q
           let (_,n) = chavePublica p q e
