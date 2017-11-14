@@ -1,5 +1,6 @@
 import System.Random
 import Data.Char
+import Data.List.Split
 
 millerRabin n 0 = return True
 millerRabin n s = do a <- randomRIO (2,300)
@@ -55,14 +56,21 @@ criptografa e n m = expModular m e n
 
 descriptografa d n c = expModular c d n
 
+converteMensagem n s = map msgToInt (converteMensagem' n s 1)
+converteMensagem' n ls e = if ((msgToInt (cs!!0)) > n) then (converteMensagem' n ls (e+1)) else cs
+                                   where c = (length ls) `div` e + 1
+                                         cs = (chunksOf c ls)
+
+converteInteiros xs = foldr1 (++) (map intToMsg xs)
+
 msgToInt m = msgToInt' m 0
 msgToInt' [] e = 0
-msgToInt' (x:xs) e = toInteger (ord x) * (255^e) + msgToInt' xs (e+1)
+msgToInt' (x:xs) e = toInteger (ord x) * (256^e) + msgToInt' xs (e+1)
 
 intToMsg n = intToMsg' n 1
 intToMsg' 0 e = ""
-intToMsg' n e = [chr (fromEnum d)] ++ intToMsg' (n-m) (e+1) where m = n `mod` (255^e)
-                                                                  d = m `div` (255^(e-1))
+intToMsg' n e = [chr (fromEnum d)] ++ intToMsg' (n-m) (e+1) where m = n `mod` (256^e)
+                                                                  d = m `div` (256^(e-1))
 
 main = do (p,q) <- geraPrimos
           e <- geraE p q
@@ -71,8 +79,13 @@ main = do (p,q) <- geraPrimos
           putStrLn ("Publica " ++ show (e,n))
           putStrLn ("Privada " ++ show (d,n))
           putStrLn ("")
-          let c = criptografa e n 1234567890
+          let ms = converteMensagem n "Mensagem teste Mensagem teste Mensagem teste Mensagem teste Mensagem teste Mensagem teste Mensagem teste Mensagem teste Mensagem teste Mensagem teste Mensagem teste Mensagem teste Mensagem teste Mensagem teste Mensagem teste"
+          let c = map (criptografa e n) ms
           print (c)
+          putStrLn (":")
+          print (converteInteiros c)
           putStrLn("")
-          let m = descriptografa d n c
+          let m = map (descriptografa d n) c
           print (m)
+          putStrLn (":")
+          print (converteInteiros m)
