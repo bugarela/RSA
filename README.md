@@ -2,4 +2,4 @@
 
 A Haskell implementation of RSA algorithm for my complexity class.
 
-Packages: `random`, `arithmoi` e `split`.
+Packages: `random`, `arithmoi` and `split`.
