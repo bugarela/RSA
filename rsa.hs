@@ -1,6 +1,7 @@
 import System.Random
 import Data.Char
 import Data.List.Split
+import Math.NumberTheory.Primes.Factorisation
 
 millerRabin n 0 = return True
 millerRabin n s = do a <- randomRIO (2,300)
@@ -89,3 +90,7 @@ main = do (p,q) <- geraPrimos
           print (m)
           putStrLn (":")
           print (converteInteiros m)
+
+a = factorise 15;
+
+ataca (e,n) m = let [(p,_),(q,_)] = factorise n in (p,q)
