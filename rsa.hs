@@ -16,7 +16,7 @@ expModular' b e m r
  | e `mod` 2 == 1 = expModular' (b * b `mod` m) (e `div` 2) m (r * b `mod` m)
 expModular' b e m r = expModular' (b * b `mod` m) (e `div` 2) m r
 
-geraPrimo = do n <- randomRIO ((2^511),(2^512)-1)
+geraPrimo = do n <- randomRIO ((2^61),(2^62)-1)
                b <- millerRabin n 100
                if b then return n else geraPrimo
 
@@ -91,6 +91,27 @@ main = do (p,q) <- geraPrimos
           putStrLn (":")
           print (converteInteiros m)
 
-a = factorise 15;
+ataque = do (p,q) <- geraPrimos
+            e <- geraE p q
+            let (_,n) = chavePublica p q e
+            let (d,_) = chavePrivada p q e
+            putStrLn ("Publica " ++ show (e,n))
+            putStrLn ("Privada " ++ show (d,n))
+            putStrLn ("")
+            let ms = converteMensagem n "Mensagem teste Mensagem teste Mensagem teste Mensagem teste Mensagem teste Mensagem teste Mensagem teste Mensagem teste Mensagem teste Mensagem teste Mensagem teste Mensagem teste Mensagem teste Mensagem teste Mensagem teste"
+            let c = map (criptografa e n) ms
+            print (c)
+            putStrLn (":")
+            print (converteInteiros c)
+            putStrLn("\nAtaque descobriu:")
+            print (ataca (e,n) c)
+            putStrLn("\nE era: ")
+            let m = map (descriptografa d n) c
+            print (m)
+            putStrLn (":")
+            print (converteInteiros m)
 
-ataca (e,n) m = let [(p,_),(q,_)] = factorise n in (p,q)
+ataca (e,n) c = converteInteiros m where
+                    m = map (descriptografa d n) c
+                    d = geraD p q e
+                    [(p,_),(q,_)] = factorise n
